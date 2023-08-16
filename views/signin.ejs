@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <title>로그인</title>
+  </head>
+  <body>
+    <h1>로그인</h1>
+    <form name="form_login">
+      <label for="userid">ID</label>
+      <input type="text" id="userid" /> <br />
+      <label for="pw">PW</label>
+      <input type="password" id="pw" /><br />
+      <button type="button" onclick="login()">로그인</button>
+    </form>
+    <!-- get 방식으로 작성하지 않은 post방식으로 page이동 -->
+    <form action="/user/profile" method="post" name="form_profile">
+      <input type="hidden" name="profile" />
+    </form>
+
+    <script>
+      function login() {
+        const form = document.forms["form_login"];
+        axios({
+          method: "POST",
+          url: "/user/signin",
+          data: {
+            userid: form.userid.value,
+            pw: form.pw.value,
+          },
+        }).then((res) => {
+          // 로그인 성공시 성공한 값을 다시 보냄
+          if (res.data.result) {
+            alert("로그인 성공");
+            // form을 가져와서 submit으로 폼을 전송시킴
+            const form_profile = document.forms["form_profile"];
+            form_profile.profile.value = form.userid.value;
+            form_profile.submit();
+          } else {
+            // window.location.href="/user/signin"
+            window.location.reload();
+            // 폼의 reset함수로 폼 값을 전부 날려버림
+            // form.reset();
+          }
+          console.log("res", res);
+        });
+      }
+    </script>
+  </body>
+</html>
